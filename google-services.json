@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "647320452545",
+    "project_id": "sumsung-itschoolprogect",
+    "storage_bucket": "sumsung-itschoolprogect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647320452545:android:349c88aacad16a9b88c340",
+        "android_client_info": {
+          "package_name": "com.test.database"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647320452545-a9oh0fjh29n26no3e8dc6km2c0oh4v5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3GcSWolIJdppEvV_aGZIZJSELKOOmABU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647320452545-a9oh0fjh29n26no3e8dc6km2c0oh4v5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

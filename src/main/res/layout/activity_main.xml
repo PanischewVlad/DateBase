@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <TextView
         android:id="@+id/textView"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textView" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvList"
+        android:id="@+id/rvRecipes"
         android:layout_width="381dp"
         android:layout_height="667dp"
         android:layout_marginStart="16dp"

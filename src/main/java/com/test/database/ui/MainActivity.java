@@ -1,7 +1,8 @@
-package com.test.database;
+package com.test.database.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentValues;
@@ -9,38 +10,64 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.test.database.DBHealper;
+import com.test.database.R;
+import com.test.database.UserModel;
+import com.test.database.adpter.RecipesAdapter;
+import com.test.database.models.RecipeModel;
+import com.test.database.models.Result;
+import com.test.database.network.NetworkServise;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     private  FirebaseFirestore db;
-    private RecyclerView rvList;
+    private RecyclerView rvRecipes;
     private static String TAG = "MAIN_ACTIVITY";
     private Button btnAdd;
     public Button btnDel;
     String id;
     public static String TABLE_NAME = "mytable";
 
-
+    RecipesAdapter adapter;
     private ContentValues contentValues;
     private SQLiteDatabase sqLiteDatabase;
     private DBHealper dbHealper;
+    private  Callback<RecipeModel> callback = new Callback<RecipeModel>() {
+        @Override
+        public void onResponse(Call<RecipeModel> call, Response<RecipeModel> response) {
+            List<Result> resipes = response.body().getResults();
+            adapter.setList(resipes);
+            for(Result result; resipes){
+               addData(result);
+            }
+
+
+        }
+
+        @Override
+        public void onFailure(Call<RecipeModel> call, Throwable t) {
+            Toast.makeText(getBaseContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+    };
 
 
 
@@ -77,8 +104,18 @@ public class MainActivity extends AppCompatActivity {
         btnDel = findViewById(R.id.btnDel);
         dbHealper = new DBHealper(this);
         connectToDatabase();
-        rvList = findViewById(R.id.rvList);
 
+        adapter = new RecipesAdapter();
+
+
+
+        getRecipes("","",3).enqueue(callback);
+
+        rvRecipes = findViewById(R.id.rvRecipes);
+        rvRecipes.setLayoutManager(new LinearLayoutManager(this));
+        rvRecipes.setAdapter(adapter);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
 
         btnAdd.setOnClickListener(v -> {
@@ -89,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
         btnDel.setOnClickListener(v -> {
             addData(user);
         });
+
+    }
+
+    private Call<RecipeModel> getRecipes(String  ingredients, String query, int pages){
+        return NetworkServise.getInstance().getApi().getRecipes(ingredients, query, pages);
 
     }
 
@@ -111,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void addData(String name, String email){
+  /*  private void addData(String name, String email){
         contentValues = new ContentValues();
         contentValues.put(DBHealper.NAME,name);
         contentValues.put(DBHealper.EMAIL,email);
@@ -120,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("scores");
         scoresRef.keepSynced(true);
     }
-
+*/
     private void connectToDatabase(){
         sqLiteDatabase =  dbHealper.getWritableDatabase();
     }
